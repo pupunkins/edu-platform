@@ -136,7 +136,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                       <input name="title" defaultValue={lesson.title} placeholder="Название урока" required className="w-full border rounded px-3 py-1.5 text-sm" />
                       <textarea name="description" defaultValue={lesson.description ?? ''} rows={2} placeholder="Описание" className="w-full border rounded px-3 py-1.5 text-sm resize-none" />
                       <div className="flex gap-2">
-                        <input name="video_id" defaultValue={lesson.video_id ?? ''} placeholder="ID видео (Bunny/Mux)" className="flex-1 border rounded px-3 py-1.5 text-sm" />
+                        <input name="video_id" defaultValue={lesson.video_id ?? ''} placeholder="Ссылка YouTube или ID" className="flex-1 border rounded px-3 py-1.5 text-sm" />
                         <input name="duration_seconds" defaultValue={lesson.duration_seconds ?? 0} type="number" placeholder="Сек." className="w-24 border rounded px-3 py-1.5 text-sm" />
                       </div>
                       <div className="flex items-center gap-3">
@@ -167,7 +167,7 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                   <input name="title" required placeholder="Название урока *" className="w-full border rounded px-3 py-1.5 text-sm" />
                   <textarea name="description" rows={2} placeholder="Описание (опционально)" className="w-full border rounded px-3 py-1.5 text-sm resize-none" />
                   <div className="flex gap-2">
-                    <input name="video_id" placeholder="ID видео (Bunny/Mux)" className="flex-1 border rounded px-3 py-1.5 text-sm" />
+                    <input name="video_id" placeholder="Ссылка YouTube или ID" className="flex-1 border rounded px-3 py-1.5 text-sm" />
                     <input name="duration_seconds" type="number" placeholder="Сек." className="w-24 border rounded px-3 py-1.5 text-sm" />
                   </div>
                   <button type="submit" className="bg-black text-white px-4 py-1.5 rounded text-sm">

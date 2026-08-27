@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { createServerClient } from '@/lib/supabase/server'
+import { extractYoutubeId } from '@/lib/youtube'
 
 export async function createCourse(formData: FormData) {
   const supabase = await createServerClient()
@@ -76,7 +77,7 @@ export async function createLesson(formData: FormData) {
   const course_id = formData.get('course_id') as string
   const title = formData.get('title') as string
   const description = formData.get('description') as string
-  const video_id = formData.get('video_id') as string
+  const video_id = extractYoutubeId(formData.get('video_id') as string)
   const duration_seconds = parseInt(formData.get('duration_seconds') as string) || 0
 
   const { error } = await supabase
@@ -94,7 +95,7 @@ export async function updateLesson(formData: FormData) {
   const module_id = formData.get('module_id') as string
   const title = formData.get('title') as string
   const description = formData.get('description') as string
-  const video_id = formData.get('video_id') as string
+  const video_id = extractYoutubeId(formData.get('video_id') as string)
   const duration_seconds = parseInt(formData.get('duration_seconds') as string) || 0
   const is_published = formData.get('is_published') === 'true'
 
