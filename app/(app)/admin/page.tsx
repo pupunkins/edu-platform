@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createServerClient } from '@/lib/supabase/server'
 import { createCourse, deleteCourse } from '@/app/actions/courses'
+import DeleteButton from '@/components/delete-button'
 
 export default async function AdminPage() {
   const supabase = await createServerClient()
@@ -36,16 +37,11 @@ export default async function AdminPage() {
               <Link href={`/admin/courses/${course.id}`} className="text-blue-600 hover:underline">
                 Открыть
               </Link>
-              <form action={deleteCourse}>
-                <input type="hidden" name="id" value={course.id} />
-                <button
-                  type="submit"
-                  className="text-red-500 hover:underline"
-                  onClick={(e) => { if (!confirm('Удалить курс?')) e.preventDefault() }}
-                >
-                  Удалить
-                </button>
-              </form>
+              <DeleteButton
+                action={deleteCourse}
+                fields={{ id: course.id }}
+                confirm="Удалить курс со всеми модулями и уроками?"
+              />
             </div>
           </div>
         ))}
