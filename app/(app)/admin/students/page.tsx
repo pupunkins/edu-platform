@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createStudent, deleteStudent, blockStudent, unblockStudent } from '@/app/actions/students'
 import DeleteButton from '@/components/delete-button'
@@ -30,10 +31,13 @@ export default async function StudentsPage() {
           return (
             <div key={user.id} className="flex items-center justify-between border rounded-lg px-4 py-3">
               <div>
-                {profile?.name && (
-                  <p className="font-medium text-sm">{profile.name}</p>
-                )}
-                <p className="text-sm text-gray-600">{user.email}</p>
+                <Link href={`/admin/students/${user.id}`} className="hover:underline">
+                  {profile?.name
+                    ? <p className="font-medium text-sm">{profile.name}</p>
+                    : <p className="font-medium text-sm">{user.email}</p>
+                  }
+                </Link>
+                {profile?.name && <p className="text-sm text-gray-500">{user.email}</p>}
                 <div className="flex gap-2 mt-1">
                   <span className={`text-xs px-2 py-0.5 rounded-full ${isBlocked ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-700'}`}>
                     {isBlocked ? 'заблокирован' : 'активен'}
