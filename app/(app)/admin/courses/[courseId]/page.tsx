@@ -6,6 +6,7 @@ import {
   createLesson, deleteLesson, updateLesson,
   updateCourse,
 } from '@/app/actions/courses'
+import DeleteButton from '@/components/delete-button'
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = await params
@@ -103,13 +104,12 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                     {mod.is_published ? 'Скрыть' : 'Опубликовать'}
                   </button>
                 </form>
-                <form action={deleteModule}>
-                  <input type="hidden" name="id" value={mod.id} />
-                  <input type="hidden" name="course_id" value={courseId} />
-                  <button type="submit" className="text-red-500 hover:underline text-xs">
-                    Удалить
-                  </button>
-                </form>
+                <DeleteButton
+                  action={deleteModule}
+                  fields={{ id: mod.id, course_id: courseId }}
+                  confirm="Удалить модуль со всеми уроками?"
+                  label="Удалить"
+                />
               </div>
             </div>
 
@@ -147,15 +147,13 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
                         <button type="submit" className="bg-black text-white px-3 py-1.5 rounded text-sm">
                           Сохранить
                         </button>
-                        <form action={deleteLesson}>
-                          <input type="hidden" name="id" value={lesson.id} />
-                          <input type="hidden" name="course_id" value={courseId} />
-                          <button type="submit" className="text-red-500 text-sm hover:underline">
-                            Удалить
-                          </button>
-                        </form>
                       </div>
                     </form>
+                    <DeleteButton
+                      action={deleteLesson}
+                      fields={{ id: lesson.id, course_id: courseId }}
+                      confirm="Удалить урок?"
+                    />
                   </details>
                 )
               ))}
