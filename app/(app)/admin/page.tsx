@@ -69,6 +69,18 @@ export default async function AdminPage() {
               className="w-full border rounded-lg px-3 py-2 text-sm resize-none"
             />
           </div>
+          <div>
+            <label className="block text-sm font-medium mb-1">Цена (USD, 0 = бесплатно)</label>
+            <input
+              name="price_usd"
+              type="number"
+              min="0"
+              step="0.01"
+              defaultValue="0"
+              placeholder="49"
+              className="w-full border rounded-lg px-3 py-2 text-sm"
+            />
+          </div>
           <button
             type="submit"
             className="bg-black text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-900"

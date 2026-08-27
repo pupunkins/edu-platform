@@ -8,10 +8,11 @@ export async function createCourse(formData: FormData) {
   const supabase = await createServerClient()
   const title = formData.get('title') as string
   const description = formData.get('description') as string
+  const price_cents = Math.round(parseFloat(formData.get('price_usd') as string || '0') * 100)
 
   const { error } = await supabase
     .from('courses')
-    .insert({ title, description })
+    .insert({ title, description, price_cents })
 
   if (error) throw new Error(error.message)
   revalidatePath('/admin')

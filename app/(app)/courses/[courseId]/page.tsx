@@ -1,14 +1,30 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { createServerClient } from '@/lib/supabase/server'
+import BuyButton from '@/components/buy-button'
 
 export default async function CoursePage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = await params
   const supabase = await createServerClient()
 
+  const { data: { user } } = await supabase.auth.getUser()
+
   const { data: course } = await supabase
-    .from('courses').select('id, title, description').eq('id', courseId).single()
+    .from('courses').select('id, title, description, price_cents').eq('id', courseId).single()
   if (!course) notFound()
+
+  // Проверяем есть ли у ученика доступ
+  const { data: enrollment } = await supabase
+    .from('enrollments')
+    .select('id, access_until')
+    .eq('user_id', user!.id)
+    .eq('course_id', courseId)
+    .maybeSingle()
+
+  const hasAccess = !!enrollment && (
+    !enrollment.access_until || new Date(enrollment.access_until) > new Date()
+  )
+  const isPaid = course.price_cents > 0
 
   const { data: modules } = await supabase
     .from('modules').select('id, title, order_index, is_published')
@@ -51,13 +67,17 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
             {course.description}
           </p>
         )}
-        {firstLesson && (
-          <Link href={`/courses/${courseId}/lessons/${firstLesson.id}`}
-            style={{ backgroundColor: 'var(--brown-800)', color: 'var(--cream)', letterSpacing: '0.15em' }}
-            className="inline-block mt-8 px-8 py-3.5 text-xs uppercase hover:opacity-80 transition-opacity">
-            Начать курс →
-          </Link>
-        )}
+        <div className="mt-8">
+          {isPaid && !hasAccess ? (
+            <BuyButton courseId={courseId} priceUsd={course.price_cents / 100} />
+          ) : firstLesson ? (
+            <Link href={`/courses/${courseId}/lessons/${firstLesson.id}`}
+              style={{ backgroundColor: 'var(--brown-800)', color: 'var(--cream)', letterSpacing: '0.15em' }}
+              className="inline-block px-8 py-3.5 text-xs uppercase hover:opacity-80 transition-opacity">
+              Начать курс →
+            </Link>
+          ) : null}
+        </div>
       </div>
 
       <div className="space-y-px" style={{ backgroundColor: 'var(--brown-200)' }}>
