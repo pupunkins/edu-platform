@@ -9,7 +9,6 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@stripe/stripe-js": "^9.14.0",
     "@supabase/ssr": "^0.12.5",
     "@supabase/supabase-js": "^2.112.4",
     "@types/papaparse": "^5.5.2",
@@ -18,7 +17,6 @@
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-hook-form": "^7.86.0",
-    "stripe": "^22.6.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {

@@ -7,7 +7,7 @@ export default function BuyButton({ courseId, priceUsd }: { courseId: string; pr
 
   async function handleClick() {
     setLoading(true)
-    const res = await fetch('/api/stripe/checkout', {
+    const res = await fetch('/api/prodamus/checkout', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ courseId }),
