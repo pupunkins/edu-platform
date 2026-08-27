@@ -7,42 +7,66 @@ export default function LoginPage() {
   const [state, formAction, pending] = useActionState(login, null)
 
   return (
-    <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-      <h1 className="text-xl font-semibold mb-6">Войти в платформу</h1>
+    <div>
+      <h1 style={{ color: 'var(--brown-900)', letterSpacing: '0.12em' }}
+        className="text-2xl font-light uppercase text-center mb-10">
+        Войти
+      </h1>
 
-      <form action={formAction} className="space-y-4">
+      <form action={formAction} className="space-y-5">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          <label style={{ color: 'var(--brown-600)', letterSpacing: '0.12em' }}
+            className="block text-xs uppercase mb-2">
+            Email
+          </label>
           <input
             name="email"
             type="email"
             required
             autoComplete="email"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+            style={{
+              border: '1px solid var(--brown-200)',
+              backgroundColor: 'transparent',
+              color: 'var(--brown-900)',
+            }}
+            className="w-full px-4 py-3 text-sm outline-none focus:border-[var(--brown-400)] transition-colors"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
+          <label style={{ color: 'var(--brown-600)', letterSpacing: '0.12em' }}
+            className="block text-xs uppercase mb-2">
+            Пароль
+          </label>
           <input
             name="password"
             type="password"
             required
             autoComplete="current-password"
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black"
+            style={{
+              border: '1px solid var(--brown-200)',
+              backgroundColor: 'transparent',
+              color: 'var(--brown-900)',
+            }}
+            className="w-full px-4 py-3 text-sm outline-none focus:border-[var(--brown-400)] transition-colors"
           />
         </div>
 
         {state?.error && (
-          <p className="text-sm text-red-600">{state.error}</p>
+          <p className="text-xs text-center" style={{ color: '#B04040' }}>{state.error}</p>
         )}
 
         <button
           type="submit"
           disabled={pending}
-          className="w-full bg-black text-white rounded-lg py-2.5 text-sm font-medium hover:bg-gray-900 disabled:opacity-50 transition-colors"
+          style={{
+            backgroundColor: 'var(--brown-800)',
+            color: 'var(--cream)',
+            letterSpacing: '0.15em',
+          }}
+          className="w-full py-3.5 text-xs uppercase font-medium hover:opacity-80 disabled:opacity-40 transition-opacity mt-2"
         >
-          {pending ? 'Входим...' : 'Войти'}
+          {pending ? '...' : 'Войти'}
         </button>
       </form>
     </div>

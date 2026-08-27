@@ -7,29 +7,18 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   const supabase = await createServerClient()
 
   const { data: course } = await supabase
-    .from('courses')
-    .select('id, title, description')
-    .eq('id', courseId)
-    .single()
-
+    .from('courses').select('id, title, description').eq('id', courseId).single()
   if (!course) notFound()
 
   const { data: modules } = await supabase
-    .from('modules')
-    .select('id, title, order_index, is_published')
-    .eq('course_id', courseId)
-    .eq('is_published', true)
-    .order('order_index')
+    .from('modules').select('id, title, order_index, is_published')
+    .eq('course_id', courseId).eq('is_published', true).order('order_index')
 
   const moduleIds = modules?.map((m) => m.id) ?? []
-
   const { data: lessons } = moduleIds.length
-    ? await supabase
-        .from('lessons')
-        .select('id, module_id, title, description, video_id, duration_seconds, is_published')
-        .in('module_id', moduleIds)
-        .eq('is_published', true)
-        .order('created_at')
+    ? await supabase.from('lessons')
+        .select('id, module_id, title, duration_seconds, is_published')
+        .in('module_id', moduleIds).eq('is_published', true).order('created_at')
     : { data: [] }
 
   type Lesson = NonNullable<typeof lessons>[number]
@@ -43,52 +32,63 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   const firstLesson = lessons?.[0]
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8">
-      <div>
-        <Link href="/dashboard" className="text-sm text-gray-500 hover:underline">← Все курсы</Link>
-        <h1 className="text-2xl font-semibold mt-2">{course.title}</h1>
+    <div className="max-w-3xl mx-auto px-8 py-16">
+      <Link href="/dashboard"
+        style={{ color: 'var(--brown-400)', letterSpacing: '0.1em' }}
+        className="text-xs uppercase hover:opacity-70 transition-opacity">
+        ← Все курсы
+      </Link>
+
+      <div className="mt-10 mb-14">
+        <p style={{ color: 'var(--brown-400)', letterSpacing: '0.2em' }}
+          className="text-xs uppercase mb-3">Курс</p>
+        <h1 style={{ color: 'var(--brown-900)', letterSpacing: '0.08em' }}
+          className="text-3xl font-light uppercase">
+          {course.title}
+        </h1>
         {course.description && (
-          <p className="text-gray-600 mt-1">{course.description}</p>
+          <p style={{ color: 'var(--brown-600)' }} className="mt-4 text-sm leading-relaxed">
+            {course.description}
+          </p>
         )}
         {firstLesson && (
-          <Link
-            href={`/courses/${courseId}/lessons/${firstLesson.id}`}
-            className="inline-block mt-4 bg-black text-white px-5 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-900"
-          >
+          <Link href={`/courses/${courseId}/lessons/${firstLesson.id}`}
+            style={{ backgroundColor: 'var(--brown-800)', color: 'var(--cream)', letterSpacing: '0.15em' }}
+            className="inline-block mt-8 px-8 py-3.5 text-xs uppercase hover:opacity-80 transition-opacity">
             Начать курс →
           </Link>
         )}
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-px" style={{ backgroundColor: 'var(--brown-200)' }}>
         {modules?.map((mod, mi) => (
-          <div key={mod.id} className="border rounded-xl overflow-hidden">
-            <div className="bg-gray-50 px-4 py-3">
-              <span className="text-xs text-gray-400 font-mono mr-2">Модуль {mi + 1}</span>
-              <span className="font-medium">{mod.title}</span>
+          <div key={mod.id} style={{ backgroundColor: 'var(--cream)' }}>
+            <div className="px-6 py-4" style={{ borderBottom: '1px solid var(--brown-100)' }}>
+              <p style={{ color: 'var(--brown-400)', letterSpacing: '0.12em' }}
+                className="text-xs uppercase">
+                Модуль {mi + 1} — {mod.title}
+              </p>
             </div>
-            <div className="divide-y">
-              {(lessonsByModule[mod.id] ?? []).map((lesson, li) => (
-                lesson && (
-                  <Link
-                    key={lesson.id}
-                    href={`/courses/${courseId}/lessons/${lesson.id}`}
-                    className="flex items-center justify-between px-4 py-3 hover:bg-gray-50 transition-colors"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-gray-400 w-5 text-right">{li + 1}</span>
-                      <span className="text-sm">{lesson.title}</span>
-                    </div>
-                    {lesson.duration_seconds > 0 && (
-                      <span className="text-xs text-gray-400">{formatDuration(lesson.duration_seconds)}</span>
-                    )}
-                  </Link>
-                )
-              ))}
-              {(lessonsByModule[mod.id] ?? []).length === 0 && (
-                <p className="px-4 py-3 text-sm text-gray-400">Уроки скоро появятся</p>
-              )}
-            </div>
+            {(lessonsByModule[mod.id] ?? []).map((lesson, li) => (
+              lesson && (
+                <Link key={lesson.id}
+                  href={`/courses/${courseId}/lessons/${lesson.id}`}
+                  className="flex items-center justify-between px-6 py-4 hover:bg-[var(--brown-50)] transition-colors group"
+                  style={{ borderBottom: '1px solid var(--brown-100)' }}>
+                  <div className="flex items-center gap-4">
+                    <span style={{ color: 'var(--brown-300)' }} className="text-xs w-5">{li + 1}</span>
+                    <span style={{ color: 'var(--brown-800)' }} className="text-sm group-hover:opacity-70 transition-opacity">
+                      {lesson.title}
+                    </span>
+                  </div>
+                  {lesson.duration_seconds > 0 && (
+                    <span style={{ color: 'var(--brown-400)' }} className="text-xs">
+                      {formatDuration(lesson.duration_seconds)}
+                    </span>
+                  )}
+                </Link>
+              )
+            ))}
           </div>
         ))}
       </div>
@@ -96,8 +96,6 @@ export default async function CoursePage({ params }: { params: Promise<{ courseI
   )
 }
 
-function formatDuration(seconds: number) {
-  const m = Math.floor(seconds / 60)
-  const s = seconds % 60
-  return `${m}:${s.toString().padStart(2, '0')}`
+function formatDuration(s: number) {
+  return `${Math.floor(s / 60)}:${(s % 60).toString().padStart(2, '0')}`
 }
